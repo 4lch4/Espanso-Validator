@@ -14,21 +14,23 @@ const main = async () => {
 
     core.info(`Found ${packageNames.length} packages...`)
 
-    core.info(files.join('\n'))
+    for (let x = 0; x < packageNames.length; x++) {
+      const packageName = packageNames[x]
+      const packageDir = join(packagesDir, packageName)
+      const packageStat = await stat(packageDir)
 
-    for (const packageName of packageNames) {
-      const packagePath = join(packagesDir, packageName)
-      core.debug(`attempting with packagePath = ${packagePath}`)
-      const packageStat = await stat(packagePath)
-
-      core.debug(`Found package ${packageName} with size ${packageStat.size}`)
+      core.info(`Found package ${packageName} with size ${packageStat.size}`)
     }
 
-    core.setOutput('fileCount', files.length)
+    // for (const packageName of packageNames) {
+    //   const packagePath = join(packagesDir, packageName)
+    //   core.debug(`attempting with packagePath = ${packagePath}`)
+    //   const packageStat = await stat(packagePath)
 
-    // Get the JSON webhook payload for the event that triggered the workflow
-    const payload = JSON.stringify(github.context.payload, undefined, 2)
-    console.log(`The event payload: ${payload}`)
+    //   core.debug(`Found package ${packageName} with size ${packageStat.size}`)
+    // }
+
+    core.setOutput('fileCount', packageNames.length) 
   } catch (error) {
     core.setFailed(error.message)
   }
