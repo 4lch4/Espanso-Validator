@@ -1,5 +1,5 @@
 import * as core from '@actions/core'
-import { IOUtil } from './lib'
+import { IOUtil, validatePackageFiles } from './lib'
 const ioUtil = new IOUtil(process.env.GITHUB_WORKSPACE || '.')
 
 const main = async () => {
@@ -11,9 +11,17 @@ const main = async () => {
     for (let x = 0; x < packageNames.length; x++) {
       const packageName = packageNames[x]
       const latestVersion = await ioUtil.getLatestVersionNumber(packageName)
-      const packageFiles = await ioUtil.getPackageFiles(packageName, latestVersion)
+      const packageFiles = await ioUtil.getPackageFiles(
+        packageName,
+        latestVersion
+      )
+      const validated = validatePackageFiles(packageFiles)
 
-      core.info(`packageFiles.join()...${packageFiles.join('\n')}`)
+      if (validated.success) {
+        core.info(`${packageName} is valid`)
+      } else {
+        core.info(`${packageName} is invalid + ${validated.error}`)
+      }
     }
 
     core.setOutput('fileCount', packageNames.length)

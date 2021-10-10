@@ -2,13 +2,18 @@ import { readdir, stat } from 'fs-extra'
 import { join } from 'path'
 
 function sortVersions(versionA: string, versionB: string): number {
-  const [a, b] = [versionA, versionB].map(v => v.split('.').map(Number))
-  for (let i = 0; i < a.length; i++) {
-    if (a[i] !== b[i]) {
-      return a[i] - b[i]
-    }
+  const [majorA, minorA, patchA] = versionA.split('.')
+  const [majorB, minorB, patchB] = versionB.split('.')
+
+  if (majorA !== majorB) {
+    return Number(majorA) - Number(majorB)
   }
-  return 0
+
+  if (minorA !== minorB) {
+    return Number(minorA) - Number(minorB)
+  }
+
+  return Number(patchA) - Number(patchB)
 }
 
 export class IOUtil {
@@ -23,7 +28,7 @@ export class IOUtil {
   async getLatestVersionNumber(packageName: string): Promise<string> {
     const versions = await this.getPackageVersions(packageName)
     const sortedVersions = versions.sort(sortVersions)
-    
+
     return sortedVersions[sortedVersions.length - 1]
   }
 
