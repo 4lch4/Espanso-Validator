@@ -1,4 +1,4 @@
-import { readdir, stat } from 'fs-extra'
+import { readdir, readFile, stat } from 'fs-extra'
 import { join } from 'path'
 
 function sortVersions(versionA: string, versionB: string): number {
@@ -17,7 +17,9 @@ function sortVersions(versionA: string, versionB: string): number {
 }
 
 export class IOUtil {
-  constructor(private basePath: string) {
+  private basePath: string
+
+  constructor() {
     this.basePath = join(process.env.GITHUB_WORKSPACE || '.', 'packages')
   }
 
@@ -40,6 +42,17 @@ export class IOUtil {
     const path = join(this.basePath, packageName, version)
 
     return await readdir(path)
+  }
+
+  async getFileContent(
+    packageName: string,
+    version: string,
+    fileName: string
+  ): Promise<string> {
+    return await readFile(
+      join(this.basePath, packageName, version, fileName),
+      'UTF-8'
+    )
   }
 
   async getPackageVersions(name: string): Promise<string[]> {

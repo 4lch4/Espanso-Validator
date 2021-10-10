@@ -1,6 +1,6 @@
 import * as core from '@actions/core'
-import { IOUtil, validatePackageFiles } from './lib'
-const ioUtil = new IOUtil(process.env.GITHUB_WORKSPACE || '.')
+import { IOUtil, validatePackageFiles, validateManifest } from './lib'
+const ioUtil = new IOUtil()
 
 const main = async () => {
   try {
@@ -17,10 +17,11 @@ const main = async () => {
       )
       const { success, error } = validatePackageFiles(packageFiles)
 
+
       if (success) {
-        core.info(`${packageName} is valid`)
+        core.debug(`${packageName} is valid`)
       } else {
-        core.info(`${packageName} is invalid - ${error}`)
+        core.debug(`${packageName} is invalid - ${error}`)
       }
     }
 
