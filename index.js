@@ -12,7 +12,7 @@ const main = async () => {
     const time = new Date().toTimeString()
     core.setOutput('time', time)
 
-    const files = await readdir(__dirname)
+    const files = await readdir(join(__dirname, '..'))
     core.info(files[0])
     core.info(`Found ${files.length} files...`)
     core.setOutput('fileCount', files.length)
