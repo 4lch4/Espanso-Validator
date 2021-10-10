@@ -2,10 +2,13 @@
   "name": "espanso-validator",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/main.js",
   "scripts": {
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "ncc build index.js"
+    "format": "prettier --write **/*.ts",
+    "format-check": "prettier --check **/*.ts",
+    "package": "ncc build --source-map --license licenses.txt"
   },
   "keywords": [],
   "author": "",
@@ -14,5 +17,12 @@
     "@actions/core": "^1.6.0",
     "@actions/github": "^5.0.0",
     "fs-extra": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^9.0.13",
+    "@types/node": "^16.10.3",
+    "prettier": "^2.4.1",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.3"
   }
 }
