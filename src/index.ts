@@ -1,5 +1,5 @@
 import * as core from '@actions/core'
-import { IOUtil, validatePackageFiles, validateManifest } from './lib'
+import { IOUtil, validatePackageFiles } from './lib'
 const ioUtil = new IOUtil()
 
 const main = async () => {
