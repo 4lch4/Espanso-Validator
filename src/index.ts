@@ -2,7 +2,7 @@ import * as core from '@actions/core'
 import { readdir, stat } from 'fs-extra'
 import { join } from 'path'
 
-const packagesDir = join(process.env.GITHUB_WORKSPACE, 'packages')
+const packagesDir = join(process.env.GITHUB_WORKSPACE || '.', 'packages')
 
 const main = async () => {
   try {
@@ -32,6 +32,7 @@ const main = async () => {
 
     core.setOutput('fileCount', packageNames.length)
   } catch (error) {
+    // @ts-ignore
     core.setFailed(error.message)
   }
 }
