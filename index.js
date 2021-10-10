@@ -13,6 +13,7 @@ const main = async () => {
     core.setOutput('time', time)
 
     const files = await readdir(__dirname)
+    core.info(files[0])
     core.info(`Found ${files.length} files...`)
     core.setOutput('fileCount', files.length)
 
