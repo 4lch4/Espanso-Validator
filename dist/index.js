@@ -11546,11 +11546,12 @@ const core = __nccwpck_require__(7538)
 const github = __nccwpck_require__(5287)
 const { readdir, stat } = __nccwpck_require__(8236)
 const { join } = __nccwpck_require__(5622)
-const packagesDir = join(__dirname, '..', 'packages')
+const packagesDir = join(process.env.GITHUB_WORKSPACE, 'packages')
 
 const main = async () => {
   try {
     // `who-to-greet` input defined in action metadata file
+    core.info(`attempting with packagesDir = ${packagesDir}`)
     const nameToGreet = core.getInput('who-to-greet')
     console.log(`Hello ${nameToGreet}!`)
 

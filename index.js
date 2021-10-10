@@ -2,11 +2,12 @@ const core = require('@actions/core')
 const github = require('@actions/github')
 const { readdir, stat } = require('fs-extra')
 const { join } = require('path')
-const packagesDir = join(__dirname, '..', 'packages')
+const packagesDir = join(process.env.GITHUB_WORKSPACE, 'packages')
 
 const main = async () => {
   try {
     // `who-to-greet` input defined in action metadata file
+    core.info(`attempting with packagesDir = ${packagesDir}`)
     const nameToGreet = core.getInput('who-to-greet')
     console.log(`Hello ${nameToGreet}!`)
 
