@@ -46,7 +46,13 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             const packageName = packageNames[x];
             const latestVersion = yield ioUtil.getLatestVersionNumber(packageName);
             const packageFiles = yield ioUtil.getPackageFiles(packageName, latestVersion);
-            core.info(`packageFiles.join()...${packageFiles.join('\n')}`);
+            const validated = (0, lib_1.validatePackageFiles)(packageFiles);
+            if (validated.success) {
+                core.info(`${packageName} is valid`);
+            }
+            else {
+                core.info(`${packageName} is invalid + ${validated.error}`);
+            }
         }
         core.setOutput('fileCount', packageNames.length);
     }
@@ -81,13 +87,15 @@ exports.IOUtil = void 0;
 const fs_extra_1 = __nccwpck_require__(8236);
 const path_1 = __nccwpck_require__(5622);
 function sortVersions(versionA, versionB) {
-    const [a, b] = [versionA, versionB].map(v => v.split('.').map(Number));
-    for (let i = 0; i < a.length; i++) {
-        if (a[i] !== b[i]) {
-            return a[i] - b[i];
-        }
+    const [majorA, minorA, patchA] = versionA.split('.');
+    const [majorB, minorB, patchB] = versionB.split('.');
+    if (majorA !== majorB) {
+        return Number(majorA) - Number(majorB);
     }
-    return 0;
+    if (minorA !== minorB) {
+        return Number(minorA) - Number(minorB);
+    }
+    return Number(patchA) - Number(patchB);
 }
 class IOUtil {
     constructor(basePath) {
@@ -136,6 +144,59 @@ exports.IOUtil = IOUtil;
 
 /***/ }),
 
+/***/ 9549:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.validatePackageFiles = void 0;
+const Expected = {
+    manifest: /_manifest\.(yml|yaml)/,
+    package: /package\.json/,
+    readme: /readme\.(md|markdown)/i
+};
+/**
+ * Checks the given package to ensure it contains the necessary files. At the
+ * time of writing, those three files are:
+ *
+ * - `_manifest.yml`
+ * - `package.json`
+ * - `README.md`
+ *
+ * @param packagePath The name of the package to validate.
+ * @returns True or False, does it contain the necessary files?
+ */
+function validatePackageFiles(files) {
+    for (const file of files) {
+        if (!Expected.manifest.test(file)) {
+            return {
+                error: `${file} is not a valid manifest file.`,
+                success: false
+            };
+        }
+        else if (!Expected.package.test(file)) {
+            return {
+                error: `${file} is not a valid package.json file.`,
+                success: false
+            };
+        }
+        else if (!Expected.readme.test(file)) {
+            return {
+                error: `${file} is not a valid readme file.`,
+                success: false
+            };
+        }
+    }
+    return {
+        success: true
+    };
+}
+exports.validatePackageFiles = validatePackageFiles;
+
+
+/***/ }),
+
 /***/ 8456:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -153,6 +214,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 __exportStar(__nccwpck_require__(4474), exports);
+__exportStar(__nccwpck_require__(9549), exports);
 
 
 /***/ }),
