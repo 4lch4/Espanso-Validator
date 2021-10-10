@@ -11545,6 +11545,7 @@ var __webpack_exports__ = {};
 const core = __nccwpck_require__(7538)
 const github = __nccwpck_require__(5287)
 const { readdir, stat } = __nccwpck_require__(8236)
+const { join } = __nccwpck_require__(5622)
 
 /**
  * Gets all of the files from the given directory by recursively calling itself

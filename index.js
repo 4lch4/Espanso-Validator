@@ -1,6 +1,7 @@
 const core = require('@actions/core')
 const github = require('@actions/github')
 const { readdir, stat } = require('fs-extra')
+const { join } = require('path')
 
 /**
  * Gets all of the files from the given directory by recursively calling itself
