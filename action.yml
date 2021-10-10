@@ -1,5 +1,8 @@
 name: 'Espanso Validator'
 description: 'Validate the packages in Espanso Hub before publishing.'
+branding:
+  icon: briefcase
+  color: green
 
 inputs:
   who-to-greet:  # id of input
