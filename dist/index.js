@@ -44,8 +44,9 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         const packageNames = yield ioUtil.getPackageNames();
         for (let x = 0; x < packageNames.length; x++) {
             const packageName = packageNames[x];
-            const content = yield ioUtil.getPackageVersions(packageName);
-            core.info(content.join('\n'));
+            const latestVersion = yield ioUtil.getLatestVersionNumber(packageName);
+            const packageFiles = yield ioUtil.getPackageFiles(packageName, latestVersion);
+            core.info(`packageFiles.join()...${packageFiles.join('\n')}`);
         }
         core.setOutput('fileCount', packageNames.length);
     }
@@ -79,24 +80,49 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.IOUtil = void 0;
 const fs_extra_1 = __nccwpck_require__(8236);
 const path_1 = __nccwpck_require__(5622);
+function sortVersions(versionA, versionB) {
+    const [a, b] = [versionA, versionB].map(v => v.split('.').map(Number));
+    for (let i = 0; i < a.length; i++) {
+        if (a[i] !== b[i]) {
+            return a[i] - b[i];
+        }
+    }
+    return 0;
+}
 class IOUtil {
     constructor(basePath) {
         this.basePath = basePath;
-        this.basePath = path_1.join(process.env.GITHUB_WORKSPACE || '.', 'packages');
+        this.basePath = (0, path_1.join)(process.env.GITHUB_WORKSPACE || '.', 'packages');
     }
     getPackageNames() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield fs_extra_1.readdir(this.basePath);
+            return yield (0, fs_extra_1.readdir)(this.basePath);
+        });
+    }
+    getLatestVersionNumber(packageName) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const versions = yield this.getPackageVersions(packageName);
+            const sortedVersions = versions.sort(sortVersions);
+            return sortedVersions[sortedVersions.length - 1];
+        });
+    }
+    getFolderPath(packageName, version) {
+        return (0, path_1.join)(this.basePath, packageName, version);
+    }
+    getPackageFiles(packageName, version) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const path = (0, path_1.join)(this.basePath, packageName, version);
+            return yield (0, fs_extra_1.readdir)(path);
         });
     }
     getPackageVersions(name) {
         return __awaiter(this, void 0, void 0, function* () {
-            const path = path_1.join(this.basePath, name);
-            const versionFolders = yield fs_extra_1.readdir(path);
+            const path = (0, path_1.join)(this.basePath, name);
+            const versionFolders = yield (0, fs_extra_1.readdir)(path);
             const directories = [];
             for (const folder of versionFolders) {
-                const filePath = path_1.join(path, folder);
-                const stats = yield fs_extra_1.stat(filePath);
+                const filePath = (0, path_1.join)(path, folder);
+                const stats = yield (0, fs_extra_1.stat)(filePath);
                 if (stats.isDirectory()) {
                     directories.push(folder);
                 }

@@ -10,9 +10,10 @@ const main = async () => {
 
     for (let x = 0; x < packageNames.length; x++) {
       const packageName = packageNames[x]
-      const content = await ioUtil.getPackageVersions(packageName)
+      const latestVersion = await ioUtil.getLatestVersionNumber(packageName)
+      const packageFiles = await ioUtil.getPackageFiles(packageName, latestVersion)
 
-      core.info(content.join('\n'))
+      core.info(`packageFiles.join()...${packageFiles.join('\n')}`)
     }
 
     core.setOutput('fileCount', packageNames.length)
