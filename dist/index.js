@@ -11547,30 +11547,6 @@ const github = __nccwpck_require__(5287)
 const { readdir, stat } = __nccwpck_require__(8236)
 const { join } = __nccwpck_require__(5622)
 
-/**
- * Gets all of the files from the given directory by recursively calling itself
- * should one of the files be a directory.
- *
- * @param dirPath The root directory to retrieve files from.
- * @param files An array of files that have been found so far.
- * @returns A string array of all files & folders in the directory.
- */
-async function getAllFiles(dirPath, files = []) {
-  // Iterate through all files in the directory.
-  for (const file of await readdir(dirPath)) {
-    // Check if the file is a directory.
-    const { isDirectory } = await stat(join(dirPath, file))
-
-    // If it _is_ a directory, recursively call this function to resolve the
-    // nested files.
-    if (isDirectory()) files = await getAllFiles(join(dirPath, file), files)
-    // Else, push the file to the returned array.
-    else files.push(join(dirPath, file))
-  }
-
-  return files
-}
-
 const main = async () => {
   try {
     // `who-to-greet` input defined in action metadata file
@@ -11580,7 +11556,7 @@ const main = async () => {
     const time = new Date().toTimeString()
     core.setOutput('time', time)
 
-    const files = await getAllFiles('.')
+    const files = await readdir(__dirname)
     core.info(`Found ${files.length} files...`)
     core.setOutput('fileCount', files.length)
 
