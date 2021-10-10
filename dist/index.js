@@ -11550,23 +11550,22 @@ const packagesDir = join(process.env.GITHUB_WORKSPACE, 'packages')
 
 const main = async () => {
   try {
-    // `who-to-greet` input defined in action metadata file
-    core.info(`attempting with packagesDir = ${packagesDir}`)
-    const nameToGreet = core.getInput('who-to-greet')
-    console.log(`Hello ${nameToGreet}!`)
+    core.debug(`attempting with packagesDir = ${packagesDir}`)
 
-    const time = new Date().toTimeString()
-    core.setOutput('time', time)
+    core.setOutput('timeStart', new Date().toTimeString())
 
     const packageNames = await readdir(packagesDir)
 
     core.info(`Found ${packageNames.length} packages...`)
 
-    for (const packageName in packageNames) {
+    core.info(files.join('\n'))
+
+    for (const packageName of packageNames) {
       const packagePath = join(packagesDir, packageName)
+      core.debug(`attempting with packagePath = ${packagePath}`)
       const packageStat = await stat(packagePath)
 
-      core.info(`Found package ${packageName} with size ${packageStat.size}`)
+      core.debug(`Found package ${packageName} with size ${packageStat.size}`)
     }
 
     core.setOutput('fileCount', files.length)

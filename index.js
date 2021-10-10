@@ -14,6 +14,8 @@ const main = async () => {
 
     core.info(`Found ${packageNames.length} packages...`)
 
+    core.info(files.join('\n'))
+
     for (const packageName of packageNames) {
       const packagePath = join(packagesDir, packageName)
       core.debug(`attempting with packagePath = ${packagePath}`)
