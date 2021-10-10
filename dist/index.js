@@ -151,16 +151,21 @@ exports.IOUtil = IOUtil;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.validatePackageFiles = void 0;
-const Expected = {
-    manifest: /_manifest\.(yml|yaml)/,
-    package: /package\.json/,
-    readme: /readme\.(md|markdown)/i
-};
+/**
+ * An array of the various file names that are required for an Espanso Package.
+ * At the time of writing those are:
+ *
+ * - `package.yml/yaml`
+ * - `README.md/markdown`
+ * - `_manifest.yml/yaml`
+ */
 const ExpectedFileNames = [
     '_manifest.yml',
     '_manifest.yaml',
-    'package.json',
-    'readme.md'
+    'package.yml',
+    'package.yaml',
+    'readme.md',
+    'readme.markdown'
 ];
 /**
  * Checks the given package to ensure it contains the necessary files. At the
@@ -176,7 +181,7 @@ const ExpectedFileNames = [
 function validatePackageFiles(files) {
     const errors = [];
     for (const file of files) {
-        if (!ExpectedFileNames.includes(file)) {
+        if (!ExpectedFileNames.includes(file.toLowerCase())) {
             errors.push(`Unexpected file: ${file}`);
         }
     }
