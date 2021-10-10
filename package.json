@@ -1,6 +1,6 @@
 {
   "name": "espanso-validator",
-  "version": "1.0.0",
+  "version": "0.0.21",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
@@ -10,8 +10,17 @@
     "format-check": "prettier --check **/*.ts",
     "package": "ncc build --source-map --license licenses.txt"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "cicd",
+    "espanso",
+    "typescript",
+    "github-action"
+  ],
+  "author": {
+    "name": "4lch4",
+    "email": "hey@4lch4.email",
+    "url": "https://alcha.org"
+  },
   "license": "ISC",
   "dependencies": {
     "@actions/core": "^1.6.0",
