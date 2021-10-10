@@ -12,6 +12,8 @@ inputs:
 outputs:
   time: # id of output
     description: 'The time we greeted you'
+  fileCount:
+    description: 'The amount of files located.'
 runs:
   using: 'node12'
   main: 'dist/index.js'
