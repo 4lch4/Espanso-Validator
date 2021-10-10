@@ -46,12 +46,12 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             const packageName = packageNames[x];
             const latestVersion = yield ioUtil.getLatestVersionNumber(packageName);
             const packageFiles = yield ioUtil.getPackageFiles(packageName, latestVersion);
-            const validated = (0, lib_1.validatePackageFiles)(packageFiles);
-            if (validated.success) {
+            const { success, error } = (0, lib_1.validatePackageFiles)(packageFiles);
+            if (success) {
                 core.info(`${packageName} is valid`);
             }
             else {
-                core.info(`${packageName} is invalid + ${validated.error}`);
+                core.info(`${packageName} is invalid - ${error}`);
             }
         }
         core.setOutput('fileCount', packageNames.length);
@@ -156,6 +156,12 @@ const Expected = {
     package: /package\.json/,
     readme: /readme\.(md|markdown)/i
 };
+const ExpectedFileNames = [
+    '_manifest.yml',
+    '_manifest.yaml',
+    'package.json',
+    'readme.md'
+];
 /**
  * Checks the given package to ensure it contains the necessary files. At the
  * time of writing, those three files are:
@@ -168,29 +174,17 @@ const Expected = {
  * @returns True or False, does it contain the necessary files?
  */
 function validatePackageFiles(files) {
+    const errors = [];
     for (const file of files) {
-        if (!Expected.manifest.test(file)) {
-            return {
-                error: `${file} is not a valid manifest file.`,
-                success: false
-            };
-        }
-        else if (!Expected.package.test(file)) {
-            return {
-                error: `${file} is not a valid package.json file.`,
-                success: false
-            };
-        }
-        else if (!Expected.readme.test(file)) {
-            return {
-                error: `${file} is not a valid readme file.`,
-                success: false
-            };
+        if (!ExpectedFileNames.includes(file)) {
+            errors.push(`Unexpected file: ${file}`);
         }
     }
-    return {
-        success: true
-    };
+    return errors.length > 0
+        ? { error: errors, success: false }
+        : {
+            success: true
+        };
 }
 exports.validatePackageFiles = validatePackageFiles;
 

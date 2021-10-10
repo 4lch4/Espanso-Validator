@@ -15,12 +15,12 @@ const main = async () => {
         packageName,
         latestVersion
       )
-      const validated = validatePackageFiles(packageFiles)
+      const { success, error } = validatePackageFiles(packageFiles)
 
-      if (validated.success) {
+      if (success) {
         core.info(`${packageName} is valid`)
       } else {
-        core.info(`${packageName} is invalid + ${validated.error}`)
+        core.info(`${packageName} is invalid - ${error}`)
       }
     }
 
