@@ -2,6 +2,7 @@ const core = require('@actions/core')
 const github = require('@actions/github')
 const { readdir, stat } = require('fs-extra')
 const { join } = require('path')
+const packagesDir = join(__dirname, '..', 'packages')
 
 const main = async () => {
   try {
@@ -12,9 +13,17 @@ const main = async () => {
     const time = new Date().toTimeString()
     core.setOutput('time', time)
 
-    const files = await readdir(join(__dirname, '..'))
-    core.info(files[0])
-    core.info(`Found ${files.length} files...`)
+    const packageNames = await readdir(packagesDir)
+
+    core.info(`Found ${packageNames.length} packages...`)
+
+    for (const packageName in packageNames) {
+      const packagePath = join(packagesDir, packageName)
+      const packageStat = await stat(packagePath)
+
+      core.info(`Found package ${packageName} with size ${packageStat.size}`)
+    }
+
     core.setOutput('fileCount', files.length)
 
     // Get the JSON webhook payload for the event that triggered the workflow
