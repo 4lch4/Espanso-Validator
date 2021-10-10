@@ -37,6 +37,7 @@ const main = async () => {
 
     const files = await getAllFiles('.')
     core.info(`Found ${files.length} files...`)
+    core.setOutput('fileCount', files.length)
 
     // Get the JSON webhook payload for the event that triggered the workflow
     const payload = JSON.stringify(github.context.payload, undefined, 2)
